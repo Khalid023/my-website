@@ -1,68 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#000000">
-    <meta name="description" content="Web site created using CloudBase Webify">
-    <title>Hello Webify！</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-                sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        code {
-            font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-                monospace;
-        }
-        .App {
-            text-align: center;
-        }
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="jquery-3.6.0.js"></script>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.w{
+			width: 500px;
+			margin: 0 auto;
+		}
+		.ndb{
+			height: 40px;
+			background-color: darkgreen;
+		}
+		h3{
+			float: left;
+			line-height: 40px;
+			font-size: 20px;
+			color: #fff;
+		}
+		input{
+			float: right;
+			margin: 8px 0;
+			height: 20px;
+			border-radius: 10px;
+			padding-left: 10px;
+		}
+		h4{
+			margin-top: 20px;
+		}
 
-        .App-logo {
-            height: 40vmin;
-            pointer-events: none;
-        }
+		.box li{
+			list-style: none;
+			width: 495px;
+			height: 30px;
+			margin-top: 15px;
+			padding-left: 10px;
+			background-color: #f1f1f1;
+			border-left: 5px solid darkgreen;
+			border-radius: 5px;
+		}
+		.box li input{
+			float: left;
+			width: 20px;
+			height: 20px;
+			margin: 5px 0;
+		}
+		.box li p{
+			float: left;
+			margin-left: 10px;
+			font-size: 15px;
+			line-height: 30px;
+		}
+		.box a{
+			float: right;
+			height: 5px;
+			width: 20px;
+			background-color: red;
+			margin: 12.5px 10px;
+			border-radius: 2.5px;
+		}
+		#done li{
+			border-left: 5px solid darkgray;
+		}
+		#done li p{
+			color: darkgrey;
+		}
+		.reset{
+			display: none;
+			position: fixed;
+			top: calc(100vh - 80px);
+			opacity: .9;
+			width: 510px;
+			height: 50px;
+			background-color: darkgreen;
+			border-radius: 10px;
+		}
+		.reset h2{
+			float: left;
+			margin-left: 20px;
+			line-height: 50px;
+			font-size: 20px;
+			color: white;
 
-        @media (prefers-reduced-motion: no-preference) {
-            .App-logo {
-                animation: App-logo-spin infinite 20s linear;
-            }
-        }
-
-        .App-header {
-            background-color: #efefef;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: calc(10px + 2vmin);
-            color: black;
-        }
-
-        .App-link {
-            color: #108ee9;
-        }
-    </style>
+		}
+		.reset a{
+			float: right;
+			margin-right: 20px;
+			line-height: 50px;
+			font-size: 20px;
+			font-weight: bold;
+			color: white;
+			text-decoration: none;
+		}
+	</style>
 </head>
-
 <body>
-    <div id="root">
-        <div class="App">
-            <header class="App-header">
-                <img src="https://main.qcloudimg.com/raw/2f3b21706c37e8685efe5c60b26ceb24.png" class="App-logo" alt="logo">
-                <p>Welcome to Webify！</p>
-                <a class="App-link" href="https://webify.cloudbase.net/"
-                    target="_blank" rel="noopener noreferrer">webify.cloudbase.net</a>
-            </header>
-        </div>
-    </div>
-</body>
+	<div class="ndb">
+		<div class="w">
+			<h3>To do list</h3>
+			<input type="text" id = 'title' placeholder="add item">
+		</div>
+	</div>
+	<div class="w">
+		<div class="reset">
+			<h2>Do you want withdraw?</h2>
+			<a href="javascript:;">Yes</a>
+		</div>
+		<h4 id="p">plan to do</h4>
+		<ul id = "todo" class="box">
+			<li>
+				<input type="checkbox" name="" id="">
+				<p>真的不错</p>
+			</li>
+		</ul>
+		<h4 id="h">have done</h4>
+		<ul id = "done" class = 'box'>
+			<li>
+				<input type="checkbox" name="" id="">
+				<p>真的不错</p>
+			</li>
+		</ul>
+	</div>
+	<script>
+		var list = [{'title':'hello' , 'done':'false'},
+		{'title':'hi' , 'done':'true'}]
+		load()
+		$('#title').on('keydown',function(e){
+			if(e.keyCode == 13){
+				var local = getData();
+				if($(this).val() != ''){
+					local.push({title: $(this).val() , done: 'false'})
+				}
+				saveData(local)
+				load()
+				$(this).val('')
+			}
+		})
+		$('ul').on('click', 'input' , function(){
+			var check = $(this).prop("checked")
+			var data = getData()
+			data[$(this).attr('index')].done = check
+			saveData(data)
+			load()
+		})
+		
+		$('ul').on('click', 'a' , function(){
+			var data = getData();
+			var index = $(this).attr('index');
+			data.splice(index , 1);
+			saveData(data);
+			load()
+		})
 
+		function getData(){
+			var data = localStorage.getItem('todo')
+			if(data != null){
+				return data = JSON.parse(data)
+			} else{
+				return [];
+			}
+		}
+		function saveData(data){
+			localStorage.setItem('todo' , JSON.stringify(data))
+		}
+		function load(){
+			$('ul').empty()
+			var data = getData();
+			var plan = 0
+			var have = 0
+			$.each(data,function(i , n){
+				if(n.done == true){
+					$('#done').prepend("<li><input type='checkbox' checked='true' index="+i+"><p>"+n['title']+"</p><a href='javascript:;' index="+i+"></a></li>")
+					have += 1
+				} else{
+					$('#todo').prepend("<li><input type='checkbox' index="+i+"><p>"+n['title']+"</p><a href='javascript:;' index="+i+"></a></li>")
+					plan += 1
+				}
+			})
+			$('#p').text(plan+' plan to do')
+			$('#h').text(have+' have done')
+		}
+	</script>
+</body>
 </html>
